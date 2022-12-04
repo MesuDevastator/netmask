@@ -216,7 +216,7 @@ static void display_binary(const int domain, const nm_address* n, nm_address* m)
 	int result{ printf_s("%s / %s\n", ns, ms) };
 }
 
-void display(nm nm, const output style)
+void display(const nm nm, const output style)
 {
 	void (*display_p)(int, const nm_address*, nm_address*) {};
 	switch (style)
