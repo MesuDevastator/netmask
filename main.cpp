@@ -1,4 +1,4 @@
-#define VERSION "2.4.4"
+#define VERSION "2.4.5"
 
 #include <cerrno>
 #include <cmath>
