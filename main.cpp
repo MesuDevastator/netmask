@@ -30,8 +30,6 @@ option long_options[] =
 	{ "binary", 0, nullptr, 'b' },
 	{ "nodns", 0, nullptr, 'n' },
 	{ "files", 0, nullptr, 'f' },
-	// { "max", 1, nullptr, 'M' },
-	// { "min", 1, nullptr, 'm' },
 	{ nullptr, 0, nullptr, 0 }
 };
 

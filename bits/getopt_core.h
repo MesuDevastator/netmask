@@ -19,75 +19,78 @@
 
 #pragma once
 
-/* This header should not be used directly; include getopt.h or
-   unistd.h instead.  Unlike most bits headers, it does not have
-   a protective #error, because the guard macro for getopt.h in
-   gnulib is not fixed.  */
+extern "C" {
 
-// __BEGIN_DECLS
+    /* This header should not be used directly; include getopt.h or
+       unistd.h instead.  Unlike most bits headers, it does not have
+       a protective #error, because the guard macro for getopt.h in
+       gnulib is not fixed.  */
 
-/* For communication from 'getopt' to the caller.
-   When 'getopt' finds an option that takes an argument,
-   the argument value is returned here.
-   Also, when 'ordering' is RETURN_IN_ORDER,
-   each non-option ARGV-element is returned here.  */
+       // __BEGIN_DECLS
 
-extern char *optarg;
+       /* For communication from 'getopt' to the caller.
+          When 'getopt' finds an option that takes an argument,
+          the argument value is returned here.
+          Also, when 'ordering' is RETURN_IN_ORDER,
+          each non-option ARGV-element is returned here.  */
 
-/* Index in ARGV of the next element to be scanned.
-   This is used for communication to and from the caller
-   and for communication between successive calls to 'getopt'.
+    extern char* optarg;
 
-   On entry to 'getopt', zero means this is the first call; initialize.
+    /* Index in ARGV of the next element to be scanned.
+       This is used for communication to and from the caller
+       and for communication between successive calls to 'getopt'.
 
-   When 'getopt' returns -1, this is the index of the first of the
-   non-option elements that the caller should itself scan.
+       On entry to 'getopt', zero means this is the first call; initialize.
 
-   Otherwise, 'optind' communicates from one call to the next
-   how much of ARGV has been scanned so far.  */
+       When 'getopt' returns -1, this is the index of the first of the
+       non-option elements that the caller should itself scan.
 
-extern int optind;
+       Otherwise, 'optind' communicates from one call to the next
+       how much of ARGV has been scanned so far.  */
 
-/* Callers store zero here to inhibit the error message 'getopt' prints
-   for unrecognized options.  */
+    extern int optind;
 
-extern int opterr;
+    /* Callers store zero here to inhibit the error message 'getopt' prints
+       for unrecognized options.  */
 
-/* Set to an option character which was unrecognized.  */
+    extern int opterr;
 
-extern int optopt;
+    /* Set to an option character which was unrecognized.  */
 
-/* Get definitions and prototypes for functions to process the
-   arguments in ARGV (ARGC of them, minus the program name) for
-   options given in OPTS.
+    extern int optopt;
 
-   Return the option character from OPTS just read.  Return -1 when
-   there are no more options.  For unrecognized options, or options
-   missing arguments, 'optopt' is set to the option letter, and '?' is
-   returned.
+    /* Get definitions and prototypes for functions to process the
+       arguments in ARGV (ARGC of them, minus the program name) for
+       options given in OPTS.
 
-   The OPTS string is a list of characters which are recognized option
-   letters, optionally followed by colons, specifying that that letter
-   takes an argument, to be placed in 'optarg'.
+       Return the option character from OPTS just read.  Return -1 when
+       there are no more options.  For unrecognized options, or options
+       missing arguments, 'optopt' is set to the option letter, and '?' is
+       returned.
 
-   If a letter in OPTS is followed by two colons, its argument is
-   optional.  This behavior is specific to the GNU 'getopt'.
+       The OPTS string is a list of characters which are recognized option
+       letters, optionally followed by colons, specifying that that letter
+       takes an argument, to be placed in 'optarg'.
 
-   The argument '--' causes premature termination of argument
-   scanning, explicitly telling 'getopt' that there are no more
-   options.
+       If a letter in OPTS is followed by two colons, its argument is
+       optional.  This behavior is specific to the GNU 'getopt'.
 
-   If OPTS begins with '-', then non-option arguments are treated as
-   arguments to the option '\1'.  This behavior is specific to the GNU
-   'getopt'.  If OPTS begins with '+', or POSIXLY_CORRECT is set in
-   the environment, then do not permute arguments.
+       The argument '--' causes premature termination of argument
+       scanning, explicitly telling 'getopt' that there are no more
+       options.
 
-   For standards compliance, the 'argv' argument has the type
-   char *const *, but this is inaccurate; if argument permutation is
-   enabled, the argv array (not the strings it points to) must be
-   writable.  */
+       If OPTS begins with '-', then non-option arguments are treated as
+       arguments to the option '\1'.  This behavior is specific to the GNU
+       'getopt'.  If OPTS begins with '+', or POSIXLY_CORRECT is set in
+       the environment, then do not permute arguments.
 
-extern int getopt (int argc, char *const * argv, const char * shortopts);
-       // __THROW __nonnull ((2, 3));
+       For standards compliance, the 'argv' argument has the type
+       char *const *, but this is inaccurate; if argument permutation is
+       enabled, the argv array (not the strings it points to) must be
+       writable.  */
+
+    extern int getopt(int argc, char* const* argv, const char* shortopts);
+    // __THROW __nonnull ((2, 3));
 
 // __END_DECLS
+}

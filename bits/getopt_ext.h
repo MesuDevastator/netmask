@@ -24,59 +24,61 @@
 
 #pragma once
 
-/* This header should not be used directly; include getopt.h instead.
-   Unlike most bits headers, it does not have a protective #error,
-   because the guard macro for getopt.h in gnulib is not fixed.  */
+extern "C" {
+	/* This header should not be used directly; include getopt.h instead.
+	   Unlike most bits headers, it does not have a protective #error,
+	   because the guard macro for getopt.h in gnulib is not fixed.  */
 
-// __BEGIN_DECLS
+	   // __BEGIN_DECLS
 
-/* Describe the long-named options requested by the application.
-   The LONG_OPTIONS argument to getopt_long or getopt_long_only is a vector
-   of 'struct option' terminated by an element containing a name which is
-   zero.
+	   /* Describe the long-named options requested by the application.
+		  The LONG_OPTIONS argument to getopt_long or getopt_long_only is a vector
+		  of 'struct option' terminated by an element containing a name which is
+		  zero.
 
-   The field 'has_arg' is:
-   no_argument		(or 0) if the option does not take an argument,
-   required_argument	(or 1) if the option requires an argument,
-   optional_argument 	(or 2) if the option takes an optional argument.
+		  The field 'has_arg' is:
+		  no_argument		(or 0) if the option does not take an argument,
+		  required_argument	(or 1) if the option requires an argument,
+		  optional_argument 	(or 2) if the option takes an optional argument.
 
-   If the field 'flag' is not NULL, it points to a variable that is set
-   to the value given in the field 'val' when the option is found, but
-   left unchanged if the option is not found.
+		  If the field 'flag' is not NULL, it points to a variable that is set
+		  to the value given in the field 'val' when the option is found, but
+		  left unchanged if the option is not found.
 
-   To have a long-named option do something other than set an 'int' to
-   a compiled-in constant, such as set a value from 'optarg', set the
-   option's 'flag' field to zero and its 'val' field to a nonzero
-   value (the equivalent single-letter option character, if there is
-   one).  For long options that have a zero 'flag' field, 'getopt'
-   returns the contents of the 'val' field.  */
+		  To have a long-named option do something other than set an 'int' to
+		  a compiled-in constant, such as set a value from 'optarg', set the
+		  option's 'flag' field to zero and its 'val' field to a nonzero
+		  value (the equivalent single-letter option character, if there is
+		  one).  For long options that have a zero 'flag' field, 'getopt'
+		  returns the contents of the 'val' field.  */
 
-struct option
-{
-	const char* name;
-	/* has_arg can't be an enum because some compilers complain about
-	   type mismatches in all the code that assumes it is an int.  */
-	int has_arg;
-	int* flag;
-	int val;
-};
+	struct option
+	{
+		const char* name;
+		/* has_arg can't be an enum because some compilers complain about
+		   type mismatches in all the code that assumes it is an int.  */
+		int has_arg;
+		int* flag;
+		int val;
+	};
 
-/* Names for the values of the 'has_arg' field of 'struct option'.  */
+	/* Names for the values of the 'has_arg' field of 'struct option'.  */
 
-enum
-{
-	no_argument = 0,
-	required_argument = 1,
-	optional_argument = 2
-};
+	enum
+	{
+		no_argument = 0,
+		required_argument = 1,
+		optional_argument = 2
+	};
 
-extern int getopt_long (int argc, char *__getopt_argv_const *argv,
-                        const char *options,
-                        const option *long_options, int *opt_index);
-       // __THROW __nonnull ((2, 3));
-extern int getopt_long_only (int argc, char *__getopt_argv_const *argv,
-			     const char *options,
-		             const option *long_options, int *opt_index);
-       // __THROW __nonnull ((2, 3));
+	extern int getopt_long(int argc, char* __getopt_argv_const* argv,
+		const char* options,
+		const option* long_options, int* opt_index);
+	// __THROW __nonnull ((2, 3));
+	extern int getopt_long_only(int argc, char* __getopt_argv_const* argv,
+		const char* options,
+		const option* long_options, int* opt_index);
+	// __THROW __nonnull ((2, 3));
 
 // __END_DECLS
+}
