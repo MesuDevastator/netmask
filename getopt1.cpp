@@ -1,3 +1,8 @@
+// ReSharper disable CppInconsistentNaming
+// ReSharper disable CppClangTidyBugproneReservedIdentifier
+// ReSharper disable CppClangTidyClangDiagnosticReservedIdentifier
+// ReSharper disable CppClangTidyClangDiagnosticReservedMacroIdentifier
+
 /* getopt_long and getopt_long_only entry points for GNU getopt.
    Copyright (C) 1987-2022 Free Software Foundation, Inc.
    This file is part of the GNU C Library and is also part of gnulib.
@@ -24,20 +29,20 @@
 #include "getopt_int.h"
 
 int
-getopt_long (int argc, char *__getopt_argv_const *argv, const char *options,
-	     const struct option *long_options, int *opt_index)
+getopt_long(const int argc, char* __getopt_argv_const* argv, const char* options,
+	const option* long_options, int* opt_index)
 {
-  return _getopt_internal (argc, (char **) argv, options, long_options,
-			   opt_index, 0, 0);
+	return _getopt_internal(argc, const_cast<char**>(argv), options, long_options,
+		opt_index, 0, 0);
 }
 
 int
-_getopt_long_r (int argc, char **argv, const char *options,
-		const struct option *long_options, int *opt_index,
-		struct _getopt_data *d)
+_getopt_long_r(const int argc, char** argv, const char* options,
+	const option* long_options, int* opt_index,
+	_getopt_data* d)
 {
-  return _getopt_internal_r (argc, argv, options, long_options, opt_index,
-			     0, d, 0);
+	return _getopt_internal_r(argc, argv, options, long_options, opt_index,
+		0, d, 0);
 }
 
 /* Like getopt_long, but '-' as well as '--' can indicate a long option.
@@ -46,21 +51,21 @@ _getopt_long_r (int argc, char **argv, const char *options,
    instead.  */
 
 int
-getopt_long_only (int argc, char *__getopt_argv_const *argv,
-		  const char *options,
-		  const struct option *long_options, int *opt_index)
+getopt_long_only(const int argc, char* __getopt_argv_const* argv,
+	const char* options,
+	const option* long_options, int* opt_index)
 {
-  return _getopt_internal (argc, (char **) argv, options, long_options,
-			   opt_index, 1, 0);
+	return _getopt_internal(argc, const_cast<char**>(argv), options, long_options,
+		opt_index, 1, 0);
 }
 
 int
-_getopt_long_only_r (int argc, char **argv, const char *options,
-		     const struct option *long_options, int *opt_index,
-		     struct _getopt_data *d)
+_getopt_long_only_r(const int argc, char** argv, const char* options,
+	const option* long_options, int* opt_index,
+	_getopt_data* d)
 {
-  return _getopt_internal_r (argc, argv, options, long_options, opt_index,
-			     1, d, 0);
+	return _getopt_internal_r(argc, argv, options, long_options, opt_index,
+		1, d, 0);
 }
 
 #ifdef TEST

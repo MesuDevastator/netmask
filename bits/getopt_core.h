@@ -17,8 +17,7 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#ifndef _GETOPT_CORE_H
-#define _GETOPT_CORE_H 1
+#pragma once
 
 /* This header should not be used directly; include getopt.h or
    unistd.h instead.  Unlike most bits headers, it does not have
@@ -88,9 +87,7 @@ extern int optopt;
    enabled, the argv array (not the strings it points to) must be
    writable.  */
 
-extern int getopt (int ___argc, char *const *___argv, const char *__shortopts);
+extern int getopt (int argc, char *const * argv, const char * shortopts);
        // __THROW __nonnull ((2, 3));
 
 // __END_DECLS
-
-#endif /* getopt_core.h */

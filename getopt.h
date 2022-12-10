@@ -1,3 +1,8 @@
+// ReSharper disable CppInconsistentNaming
+// ReSharper disable CppClangTidyBugproneReservedIdentifier
+// ReSharper disable CppClangTidyClangDiagnosticReservedIdentifier
+// ReSharper disable CppClangTidyClangDiagnosticReservedMacroIdentifier
+
 /* Declarations for getopt.
    Copyright (C) 1989-2022 Free Software Foundation, Inc.
    This file is part of the GNU C Library.
@@ -18,8 +23,7 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#ifndef _GETOPT_H
-#define _GETOPT_H 1
+#pragma once
 
 /* The type of the 'argv' argument to getopt_long and getopt_long_only
    is properly 'char **', since both functions may write to the array
@@ -32,5 +36,3 @@
 
 #include "bits/getopt_core.h"
 #include "bits/getopt_ext.h"
-
-#endif /* getopt.h */

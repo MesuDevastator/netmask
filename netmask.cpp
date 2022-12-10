@@ -116,6 +116,7 @@ static uint128 uint128_lit(const unsigned long long h, const unsigned long long 
 
 static uint128 uint128_cidr(const unsigned char n)
 {
+	// ReSharper disable once CppInitializedValueIsAlwaysRewritten
 	uint128 rv{};
 	if (n <= 0) {
 		rv.h = 0;
@@ -123,13 +124,15 @@ static uint128 uint128_cidr(const unsigned char n)
 	}
 	else if (n <= 64)
 	{
-		rv.h = ~0ULL << 64 - n;		// NOLINT(clang-diagnostic-shift-op-parentheses)
+		// ReSharper disable CppRedundantParentheses
+		rv.h = ~0ULL << (64 - n);
 		rv.l = 0;
 	}
 	else if (n <= 128)
 	{
 		rv.h = ~0ULL;
-		rv.l = ~0ULL << 128 - n;	// NOLINT(clang-diagnostic-shift-op-parentheses)
+		rv.l = ~0ULL << (128 - n);
+		// ReSharper restore CppRedundantParentheses
 	}
 	else
 	{
@@ -151,9 +154,8 @@ static int cidr(const uint128& u)
 
 static int check_mask(const uint128& v)
 {
-	int i{};
 	uint128 m{ uint128_lit(~0ULL, ~0ULL) };
-	for (i = 0; i < 129; i++)
+	for (int i = 0; i < 129; i++)
 	{
 		if (uint128_cmp(v, m) == 0)
 			return 1;
@@ -199,7 +201,7 @@ static int joinable_pair(const nm a, const nm b)
 
 static int is_v4(const nm self)
 {
-	tag_nm v4_map{ uint128_lit(0, 0x0000ffff00000000ULL), uint128_cidr(96) };
+	tag_nm v4_map{ uint128_lit(0, 0x0000ffff00000000ULL), uint128_cidr(96), {}, {} };
 	return self->domain == AF_INET && subset_of(self, &v4_map);
 }
 
@@ -231,9 +233,9 @@ static nm parse_address(const char* str, const int flags)
 		return nm_new_v6(&s6);
 	if (inet_pton(AF_INET, str, &s))
 		return nm_new_v4(&s);
-	if (NM_USE_DNS & flags)
+	if (nm_use_dns & flags)
 	{
-		const addrinfo in{ .ai_family = AF_UNSPEC };
+		constexpr addrinfo in{ .ai_family = AF_UNSPEC };
 		addrinfo* out{};
 		if (getaddrinfo(str, nullptr, &in, &out) == 0)
 		{
@@ -337,9 +339,9 @@ static nm nm_seq(nm first, nm last)
 
 nm nm_new_str(const char* str, const int flags)
 {
-	const char* p{};
+	const char* p;
 	char buf[2048]{};
-	nm self{};
+	nm self;
 	if ((p = strchr(str, '/')))
 	{
 		strncpy_s(buf, str, p - str);
@@ -356,8 +358,7 @@ nm nm_new_str(const char* str, const int flags)
 	}
 	if ((p = strchr(str, ',')))
 	{
-		nm top{};
-		int add{};
+		int add;
 		strncpy_s(buf, str, p - str);
 		buf[p - str] = '\0';
 		self = parse_address(buf, flags);
@@ -367,7 +368,7 @@ nm nm_new_str(const char* str, const int flags)
 			add = 1;
 		else
 			add = 0;
-		top = parse_address(p + add + 1, flags);
+		const nm top{ parse_address(p + add + 1, flags) };
 		if (!top)
 		{
 			delete self;
@@ -392,8 +393,8 @@ nm nm_new_str(const char* str, const int flags)
 		return self;
 	if ((p = strchr(str, ':')))
 	{
-		nm top{};
-		int add{};
+		nm top;
+		int add;
 		strncpy_s(buf, str, p - str);
 		buf[p - str] = '\0';
 		self = parse_address(buf, flags);
@@ -404,12 +405,13 @@ nm nm_new_str(const char* str, const int flags)
 			add = 1;
 			if (p[2] == '-')
 			{
+				// ReSharper disable once CppInitializedValueIsAlwaysRewritten
 				in_addr s{};
 				char* end{};
 				const unsigned long long v{ self->net_address.l + strtoull(p + 2, &end, 0) };
 				if (*end == '\0')
 				{
-					s.s_addr = htonl(v);
+					s.s_addr = htonl(static_cast<unsigned long>(v));
 					top = nm_new_v4(&s);
 					if (!top)
 					{
@@ -450,7 +452,7 @@ nm nm_merge(nm dst, nm src) {
 	nm tmp;
 	nm* pos{ &dst };
 	while (src) {
-		if (*pos == nullptr) {
+		if (*pos == nullptr) {  // NOLINT(bugprone-branch-clone)
 			tmp = src;
 			src = *pos;
 			*pos = tmp;

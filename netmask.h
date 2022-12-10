@@ -1,9 +1,11 @@
 #pragma once
 #include <WinSock2.h>
 #include <in6addr.h>
+// ReSharper disable CppUnusedIncludeDirective
 #include <ws2ipdef.h>
 #include <WS2tcpip.h>
-#define NM_USE_DNS 1
+// ReSharper restore CppUnusedIncludeDirective
+constexpr auto nm_use_dns{ 1 };
 using nm = struct tag_nm*;
 nm nm_new_v4(const in_addr*);
 nm nm_new_v6(const in6_addr*);

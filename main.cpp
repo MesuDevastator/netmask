@@ -51,23 +51,22 @@ const char* v_version{ __DATE__ " " __TIME__ };
 const char* usage{ "Try '%s --help' for more information." };
 char* program_name{};
 
-void display_std(const int domain, const nm_address* n, nm_address* m)
+void display_std(const int domain, const nm_address* n, const nm_address* m)
 {
 	char nb[INET6_ADDRSTRLEN + 1]{}, mb[INET6_ADDRSTRLEN + 1]{};
 	inet_ntop(domain, n, nb, INET6_ADDRSTRLEN);
 	inet_ntop(domain, m, mb, INET6_ADDRSTRLEN);
-	int result{ printf_s("%15s/%-15s\n", nb, mb) };
+	[[maybe_unused]] int result{ printf_s("%15s/%-15s\n", nb, mb) };
 }
 
-static void display_cidr(const int domain, const nm_address* n, nm_address* m)
+static void display_cidr(const int domain, const nm_address* n, const nm_address* m)
 {
 	char nb[INET6_ADDRSTRLEN + 1]{};
 	int cidr{};
 	inet_ntop(domain, n, nb, INET6_ADDRSTRLEN);
 	if (domain == AF_INET)
 	{
-		unsigned mask{};
-		for (mask = ntohl(m->s.s_addr); mask; mask <<= 1)
+		for (unsigned mask{ ntohl(m->s.s_addr) }; mask; mask <<= 1)
 			cidr++;
 	}
 	else
@@ -76,7 +75,7 @@ static void display_cidr(const int domain, const nm_address* n, nm_address* m)
 			for (unsigned char c{ m->s6.s6_addr[i]}; c; c <<= 1)
 				cidr++;
 	}
-	int result{ printf_s("%15s/%d\n", nb, cidr) };
+	[[maybe_unused]] int result{ printf_s("%15s/%d\n", nb, cidr) };
 }
 
 static void display_cisco(const int domain, const nm_address* n, nm_address* m)
@@ -89,17 +88,15 @@ static void display_cisco(const int domain, const nm_address* n, nm_address* m)
 		m->s.s_addr = ~m->s.s_addr;
 	inet_ntop(domain, n, nb, INET6_ADDRSTRLEN);
 	inet_ntop(domain, m, mb, INET6_ADDRSTRLEN);
-	int result{ printf_s("%15s %-15s\n", nb, mb) };
+	[[maybe_unused]] int result{ printf_s("%15s %-15s\n", nb, mb) };
 }
 
 static void range_number(char* destination, const unsigned char* source)
 {
 	char digits[41]{};
-	int z{};
-	bool overflow{};
 	for (int i{}; i < 17; i++)
 	{
-		overflow = false;
+		bool overflow{ false };
 		for (int j{ sizeof digits - 1 }; j >= 0; j--)
 		{
 			const char temp{ static_cast<char>(digits[j] * 256 + overflow) };
@@ -116,7 +113,7 @@ static void range_number(char* destination, const unsigned char* source)
 			overflow = sum / 10;
 		}
 	}
-	z = 1;
+	int z{ 1 };
 	for (int i{}; static_cast<unsigned long long>(i) < sizeof digits; i++)
 	{
 		if (z && digits[i] == 0)
@@ -126,6 +123,7 @@ static void range_number(char* destination, const unsigned char* source)
 	}
 	if (z)
 		*destination++ = '0';
+	// ReSharper disable once CppAssignedValueIsNeverUsed
 	*destination++ = '\0';
 }
 
@@ -159,23 +157,23 @@ static void display_range(const int domain, const nm_address* n, nm_address* m)
 	range_number(ns, ra);
 	inet_ntop(domain, n, nb, INET6_ADDRSTRLEN);
 	inet_ntop(domain, m, mb, INET6_ADDRSTRLEN);
-	int result{ printf_s("%15s-%-15s (%s)\n", nb, mb, ns) };
+	[[maybe_unused]] int result{ printf_s("%15s-%-15s (%s)\n", nb, mb, ns) };
 }
 
-static void display_hex(const int domain, const nm_address* n, nm_address* m)
+static void display_hex(const int domain, const nm_address* n, const nm_address* m)
 {
 	if (domain == AF_INET)
-		int result{ printf_s("0x%08lx/0x%08lx\n", htonl(n->s.s_addr), htonl(m->s.s_addr)) };
+		[[maybe_unused]] int result{ printf_s("0x%08lx/0x%08lx\n", htonl(n->s.s_addr), htonl(m->s.s_addr)) };
 	else
-		int result{ printf_s("0x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x/0x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x\n", n->s6.s6_addr[0], n->s6.s6_addr[1], n->s6.s6_addr[2], n->s6.s6_addr[3], n->s6.s6_addr[4], n->s6.s6_addr[5], n->s6.s6_addr[6], n->s6.s6_addr[7], n->s6.s6_addr[8], n->s6.s6_addr[9], n->s6.s6_addr[10], n->s6.s6_addr[11], n->s6.s6_addr[12], n->s6.s6_addr[13], n->s6.s6_addr[14], n->s6.s6_addr[15], m->s6.s6_addr[0], m->s6.s6_addr[1], m->s6.s6_addr[2], m->s6.s6_addr[3], m->s6.s6_addr[4], m->s6.s6_addr[5], m->s6.s6_addr[6], m->s6.s6_addr[7], m->s6.s6_addr[8], m->s6.s6_addr[9], m->s6.s6_addr[10], m->s6.s6_addr[11], m->s6.s6_addr[12], m->s6.s6_addr[13], m->s6.s6_addr[14], m->s6.s6_addr[15]) };
+		[[maybe_unused]] int result{ printf_s("0x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x/0x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x\n", n->s6.s6_addr[0], n->s6.s6_addr[1], n->s6.s6_addr[2], n->s6.s6_addr[3], n->s6.s6_addr[4], n->s6.s6_addr[5], n->s6.s6_addr[6], n->s6.s6_addr[7], n->s6.s6_addr[8], n->s6.s6_addr[9], n->s6.s6_addr[10], n->s6.s6_addr[11], n->s6.s6_addr[12], n->s6.s6_addr[13], n->s6.s6_addr[14], n->s6.s6_addr[15], m->s6.s6_addr[0], m->s6.s6_addr[1], m->s6.s6_addr[2], m->s6.s6_addr[3], m->s6.s6_addr[4], m->s6.s6_addr[5], m->s6.s6_addr[6], m->s6.s6_addr[7], m->s6.s6_addr[8], m->s6.s6_addr[9], m->s6.s6_addr[10], m->s6.s6_addr[11], m->s6.s6_addr[12], m->s6.s6_addr[13], m->s6.s6_addr[14], m->s6.s6_addr[15]) };
 }
 
-static void display_octal(const int domain, const nm_address* n, nm_address* m)
+static void display_octal(const int domain, const nm_address* n, const nm_address* m)
 {
 	if (domain == AF_INET)
-		int result{ printf_s("0x%10lo/0x%10lo\n", htonl(n->s.s_addr), htonl(m->s.s_addr)) };
+		[[maybe_unused]] int result{ printf_s("0x%10lo/0x%10lo\n", htonl(n->s.s_addr), htonl(m->s.s_addr)) };
 	else
-		int result{ printf_s("0x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x/0x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x\n", n->s6.s6_addr[0], n->s6.s6_addr[1], n->s6.s6_addr[2], n->s6.s6_addr[3], n->s6.s6_addr[4], n->s6.s6_addr[5], n->s6.s6_addr[6], n->s6.s6_addr[7], n->s6.s6_addr[8], n->s6.s6_addr[9], n->s6.s6_addr[10], n->s6.s6_addr[11], n->s6.s6_addr[12], n->s6.s6_addr[13], n->s6.s6_addr[14], n->s6.s6_addr[15], m->s6.s6_addr[0], m->s6.s6_addr[1], m->s6.s6_addr[2], m->s6.s6_addr[3], m->s6.s6_addr[4], m->s6.s6_addr[5], m->s6.s6_addr[6], m->s6.s6_addr[7], m->s6.s6_addr[8], m->s6.s6_addr[9], m->s6.s6_addr[10], m->s6.s6_addr[11], m->s6.s6_addr[12], m->s6.s6_addr[13], m->s6.s6_addr[14], m->s6.s6_addr[15]) };
+		[[maybe_unused]] int result{ printf_s("0x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x/0x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x%03x\n", n->s6.s6_addr[0], n->s6.s6_addr[1], n->s6.s6_addr[2], n->s6.s6_addr[3], n->s6.s6_addr[4], n->s6.s6_addr[5], n->s6.s6_addr[6], n->s6.s6_addr[7], n->s6.s6_addr[8], n->s6.s6_addr[9], n->s6.s6_addr[10], n->s6.s6_addr[11], n->s6.s6_addr[12], n->s6.s6_addr[13], n->s6.s6_addr[14], n->s6.s6_addr[15], m->s6.s6_addr[0], m->s6.s6_addr[1], m->s6.s6_addr[2], m->s6.s6_addr[3], m->s6.s6_addr[4], m->s6.s6_addr[5], m->s6.s6_addr[6], m->s6.s6_addr[7], m->s6.s6_addr[8], m->s6.s6_addr[9], m->s6.s6_addr[10], m->s6.s6_addr[11], m->s6.s6_addr[12], m->s6.s6_addr[13], m->s6.s6_addr[14], m->s6.s6_addr[15]) };
 }
 
 static void binary_string(char* destination, const unsigned char* source, const int length)
@@ -189,7 +187,7 @@ static void binary_string(char* destination, const unsigned char* source, const 
 	destination[-1] = '\0';
 }
 
-static void display_binary(const int domain, const nm_address* n, nm_address* m)
+static void display_binary(const int domain, const nm_address* n, const nm_address* m)
 {
 	char ns[144]{}, ms[144]{};
 	unsigned char bits[16]{};
@@ -213,7 +211,7 @@ static void display_binary(const int domain, const nm_address* n, nm_address* m)
 		binary_string(ns, n->s6.s6_addr, 16);
 		binary_string(ms, m->s6.s6_addr, 16);
 	}
-	int result{ printf_s("%s / %s\n", ns, ms) };
+	[[maybe_unused]] int result{ printf_s("%s / %s\n", ns, ms) };
 }
 
 void display(const nm nm, const output style)
@@ -222,10 +220,10 @@ void display(const nm nm, const output style)
 	switch (style)
 	{
 	case out_std:
-		display_p = &display_std;
+		display_p = reinterpret_cast<void (*)(int, const nm_address*, nm_address*)>(&display_std);
 		break;
 	case out_cidr:
-		display_p = &display_cidr;
+		display_p = reinterpret_cast<void (*)(int, const nm_address*, nm_address*)>(&display_cidr);
 		break;
 	case out_cisco:
 		display_p = &display_cisco;
@@ -234,13 +232,13 @@ void display(const nm nm, const output style)
 		display_p = &display_range;
 		break;
 	case out_hex:
-		display_p = &display_hex;
+		display_p = reinterpret_cast<void (*)(int, const nm_address*, nm_address*)>(&display_hex);
 		break;
 	case out_octal:
-		display_p = &display_octal;
+		display_p = reinterpret_cast<void (*)(int, const nm_address*, nm_address*)>(&display_octal);
 		break;
 	case out_binary:
-		display_p = &display_binary;
+		display_p = reinterpret_cast<void (*)(int, const nm_address*, nm_address*)>(&display_binary);
 		break;
 	}
 	nm_walk(nm, display_p);
@@ -256,7 +254,7 @@ static void add_entry(nm* pnm, const char* string, const int dns)
 
 int main(const int argc, char* argv[])
 {
-	int opt_count{}, h{}, v{}, f{}, dns{ NM_USE_DNS }, lose{};
+	int opt_count, h{}, v{}, f{}, dns{ nm_use_dns }, lose{};
 	output output{ out_cidr };
 	program_name = argv[0];
 	init_errors(program_name, 0, 0);
@@ -359,13 +357,13 @@ int main(const int argc, char* argv[])
 			char buf[1024]{};
 			FILE* fp{};
 			if (strncmp(argv[optind], "-", 1) != 0)
-				errno_t result{ fopen_s(&fp, argv[optind], "r") };
+				[[maybe_unused]] errno_t result{ fopen_s(&fp, argv[optind], "r") };
 			else
 				fp = stdin;
 			if (!fp)
 			{
 				char err[1024]{};
-				errno_t result{ strerror_s(err, errno) };
+				[[maybe_unused]] errno_t result{ strerror_s(err, errno) };
 				std::cerr << "Failed to open file: " << argv[optind] << ": " << err << std::endl;
 				continue;
 			}

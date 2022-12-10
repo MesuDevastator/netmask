@@ -1,3 +1,8 @@
+// ReSharper disable CppInconsistentNaming
+// ReSharper disable CppClangTidyBugproneReservedIdentifier
+// ReSharper disable CppClangTidyClangDiagnosticReservedIdentifier
+// ReSharper disable CppClangTidyClangDiagnosticReservedMacroIdentifier
+
 /* Declarations for getopt (GNU extensions).
    Copyright (C) 1989-2022 Free Software Foundation, Inc.
    This file is part of the GNU C Library and is also part of gnulib.
@@ -17,8 +22,7 @@
    License along with the GNU C Library; if not, see
    <https://www.gnu.org/licenses/>.  */
 
-#ifndef _GETOPT_EXT_H
-#define _GETOPT_EXT_H 1
+#pragma once
 
 /* This header should not be used directly; include getopt.h instead.
    Unlike most bits headers, it does not have a protective #error,
@@ -49,29 +53,30 @@
 
 struct option
 {
-  const char *name;
-  /* has_arg can't be an enum because some compilers complain about
-     type mismatches in all the code that assumes it is an int.  */
-  int has_arg;
-  int *flag;
-  int val;
+	const char* name;
+	/* has_arg can't be an enum because some compilers complain about
+	   type mismatches in all the code that assumes it is an int.  */
+	int has_arg;
+	int* flag;
+	int val;
 };
 
 /* Names for the values of the 'has_arg' field of 'struct option'.  */
 
-#define no_argument		0
-#define required_argument	1
-#define optional_argument	2
+enum
+{
+	no_argument = 0,
+	required_argument = 1,
+	optional_argument = 2
+};
 
-extern int getopt_long (int ___argc, char *__getopt_argv_const *___argv,
-			const char *__shortopts,
-		        const struct option *__longopts, int *__longind);
+extern int getopt_long (int argc, char *__getopt_argv_const *argv,
+                        const char *options,
+                        const option *long_options, int *opt_index);
        // __THROW __nonnull ((2, 3));
-extern int getopt_long_only (int ___argc, char *__getopt_argv_const *___argv,
-			     const char *__shortopts,
-		             const struct option *__longopts, int *__longind);
+extern int getopt_long_only (int argc, char *__getopt_argv_const *argv,
+			     const char *options,
+		             const option *long_options, int *opt_index);
        // __THROW __nonnull ((2, 3));
 
 // __END_DECLS
-
-#endif /* getopt_ext.h */

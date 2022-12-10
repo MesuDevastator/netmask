@@ -6,10 +6,15 @@
 #include <cstring>
 
 #define SYSLOG(x, y, z)
-#define LOG_DEBUG 7
-#define LOG_WARNING 4
-#define LOG_ERROR 3
-#define STRERROR(x) "system error"
+
+enum
+{
+	log_debug = 7,
+	log_warning = 4,
+	log_error = 3
+};
+
+#define SYSERROR(x) "system error"  // NOLINT(clang-diagnostic-unused-macros)
 
 static char* program_name{};
 static int show_status{};
@@ -27,21 +32,21 @@ int init_errors(char* pn, int type, const int stat)
 int status(const char* fmt, ...)
 {
 	static char buf[1024]{};
-	va_list args{};
+	va_list args;
 	va_start(args, fmt);
-	int result{ vsnprintf_s(buf, sizeof buf, fmt, args) };
+	[[maybe_unused]] int result{ vsnprintf_s(buf, sizeof buf, fmt, args) };
 	va_end(args);
-	return message(LOG_DEBUG, buf);
+	return message(log_debug, buf);
 }
 
 int warn(const char* fmt, ...)
 {
 	static char buf[1024]{};
-	va_list args{};
+	va_list args;
 	va_start(args, fmt);
-	int result{ vsnprintf_s(buf, sizeof buf, fmt, args) };
+	[[maybe_unused]] int result{ vsnprintf_s(buf, sizeof buf, fmt, args) };
 	va_end(args);
-	return message(LOG_WARNING, buf);
+	return message(log_warning, buf);
 }
 
 int panic(const char* fmt, ...)
@@ -49,9 +54,9 @@ int panic(const char* fmt, ...)
 	static char buf[1024];
 	va_list args;
 	va_start(args, fmt);
-	int result{ vsnprintf_s(buf, sizeof buf, fmt, args) };
+	[[maybe_unused]] int result{ vsnprintf_s(buf, sizeof buf, fmt, args) };
 	va_end(args);
-	message(LOG_ERROR, buf);
+	message(log_error, buf);
 	exit(1);  // NOLINT(concurrency-mt-unsafe)
 }
 
@@ -61,7 +66,7 @@ int message(const int priority, const char* message)
 	if (errno && priority < 5)
 	{
 		char err[1024];
-		errno_t result{ strerror_s(err, errno) };
+		[[maybe_unused]] errno_t result{ strerror_s(err, errno) };
 		_snprintf_s(buf, sizeof buf, "%s: %s", message, err);
 		errno = 0;
 	}
@@ -70,6 +75,6 @@ int message(const int priority, const char* message)
 	if (use_syslog)
 		SYSLOG(priority, "%s", buf);
 	else
-		int result{ fprintf_s(stderr, "%s: %s\n", program_name, buf) };
+		[[maybe_unused]] int result{ fprintf_s(stderr, "%s: %s\n", program_name, buf) };
 	return 0;
 }
